@@ -29,15 +29,15 @@ from analyzer import app, similarities
 @app.route("/")
 def root():
     """Root Route"""
-    return 'Recipes Analyzer'
+    return "Recipes Analyzer"
 
 
 @app.route("/api/v1/recommendation/<recipe_id>/components")
 def recommend_recipe(recipe_id):
-    """Recommend n recipes based on a recipe id. 
-       Example: <url>/api/v1/recommendation/1234/components?num=10
+    """Recommend n recipes based on a recipe id.
+    Example: <url>/api/v1/recommendation/1234/components?num=10
     """
-    num = request.args.get('num')
+    num = request.args.get("num")
     num = _ensure_num(num)
     app.logger.info("num recommendations requested " + str(num))
     r = similarities.calc_simple_similarity(recipe_id, num)

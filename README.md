@@ -26,11 +26,12 @@ Micro-Service that analyzes the recipes of [recipes-manager](https://github.com/
 
     ````bash
     FLASK_ENV=development   FLASK_APP="analyzer" flask run
+    FLASK_DEBUG=1 FLASK_APP="analyzer" flask run
     ````
 
 ## Development
 
-# Testing
+### Testing
 
 ````bash
 pytest -v
