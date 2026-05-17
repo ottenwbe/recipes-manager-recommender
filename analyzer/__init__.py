@@ -38,14 +38,14 @@ def configure_app():
 
 app = Flask("recipes-analyzer")
 
-@app.route('/api/v1/recommendation/health', methods=['GET'])
+
+@app.route("/api/v1/recommendation/health", methods=["GET"])
 def health_check():
     """
     Health check endpoint to verify that the service is responding.
     """
-    return jsonify({
-        "status": "healthy"
-    }), 200
+    return jsonify({"status": "healthy"}), 200
+
 
 # Run configuration
 configure_app()
