@@ -20,10 +20,10 @@ def test_singleton_config():
 
 def test_read_yml_config():
     try:
-        with open('config.yml', 'w') as writer:
+        with open("config.yml", "w") as writer:
             writer.write(config.RECIPE_SERVER + ": ahost:123")
         cfg1 = RecipeStatsConfig()
         cfg1.make_config()
         assert cfg1.RECIPE_SERVER == "ahost:123"
     finally:
-        os.remove('config.yml')
+        os.remove("config.yml")

@@ -1,11 +1,12 @@
-FROM docker.io/python:3.12-bullseye
+FROM docker.io/python:3.14-alpine
 LABEL maintainer="ottenwbe.public@gmail.com"
 
-ADD analyzer/ /app/analyzer/
-ADD requirements.txt /app
+WORKDIR /app
 
-RUN pip install -r /app/requirements.txt
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
+COPY analyzer/ ./analyzer/
 # Make port 5000 available to the world outside this container
 EXPOSE 5000
 

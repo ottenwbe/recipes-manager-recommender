@@ -30,16 +30,17 @@ def calc_simple_similarity(recipe_id, num, c=recipes_client.Client()):
     recipes = c.get_full_recipes()
     component_per_recipe = _extract_recipe_components(recipes)
     recipe_similarities = _calc_jaccard_similarities(
-        component_per_recipe[recipe_id], component_per_recipe)
+        component_per_recipe[recipe_id], component_per_recipe
+    )
     recipe_similarities = _sort_and_crop(recipe_similarities, num)
 
-    return {'recipes': _make_result(recipe_similarities)}
+    return {"recipes": _make_result(recipe_similarities)}
 
 
 def _make_result(similarities):
     result = []
     for s in similarities:
-        result.append(s['id'])
+        result.append(s["id"])
     return result
 
 
@@ -53,7 +54,7 @@ def _jaccard_similarity_set(set1, set2):
 
 
 def _take_score(element):
-    return element['score']
+    return element["score"]
 
 
 def _sort_and_crop(scores, num):
@@ -67,16 +68,18 @@ def _calc_jaccard_similarities(reference_recipe, component_per_recipe):
     recipe_similarities = []
     for val in component_per_recipe.values():
         recipe_similarities = _append_recipe_similarity(
-            reference_recipe, recipe_similarities, val)
+            reference_recipe, recipe_similarities, val
+        )
     logging.error(recipe_similarities)
     return recipe_similarities
 
 
 def _append_recipe_similarity(reference_recipe, recipe_similarities, val):
-    if reference_recipe['id'] != val['id']:
+    if reference_recipe["id"] != val["id"]:
         score = _jaccard_similarity_set(
-            reference_recipe['components'], val['components'])
-        recipe_similarities.append({'id': val['id'], 'score': score})
+            reference_recipe["components"], val["components"]
+        )
+        recipe_similarities.append({"id": val["id"], "score": score})
     return recipe_similarities
 
 
@@ -87,12 +90,13 @@ def _extract_recipe_components(recipes):
     for r in recipes:
         components = set()
         try:
-            for component in r['components']:
-                components.add(component['name'])
+            for component in r["components"]:
+                components.add(component["name"])
 
-            recipe_id = str(r['id'])
+            recipe_id = str(r["id"])
             component_per_recipe[recipe_id] = {
-                'id': recipe_id, 'components': components
+                "id": recipe_id,
+                "components": components,
             }
         except:
             logging.error("Could not add valid recipe")

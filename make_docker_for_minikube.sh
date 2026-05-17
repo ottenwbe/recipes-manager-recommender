@@ -4,6 +4,7 @@
 MAINTAINER="Beate Ottenwaelder <ottenwbe.public@gmail.com>"
 APP_VERSION="development"
 DATE=$(date +"%F %T")
+DOCKER_REGISTRY=${DOCKER_REGISTRY:-localhost:5000}
 
-docker build --label "version=${APP_VERSION}" --label "build_date=${DATE}"  --label "maintaner=${MAINTAINER}" -t "localhost:5000/ottenwbe/recipes-manager-recommender:development" -f Dockerfile . 
-docker push "localhost:5000/ottenwbe/recipes-manager-recommender:development" --tls-verify=false
+podman build --label "version=${APP_VERSION}" --label "build_date=${DATE}"  --label "maintaner=${MAINTAINER}" -t "${DOCKER_REGISTRY}/ottenwbe/recipes-manager-recommender:development" -f Dockerfile . 
+podman push "${DOCKER_REGISTRY}/ottenwbe/recipes-manager-recommender:development" --tls-verify=false

@@ -41,8 +41,7 @@ class Client:
 
     def get_recipe(self, recipe_id):
         """Get a recipe by id"""
-        url = "{}/api/v1/recipes/r/{}".format(
-            RECIPE_CONFIG.RECIPE_SERVER, recipe_id)
+        url = "{}/api/v1/recipes/r/{}".format(RECIPE_CONFIG.RECIPE_SERVER, recipe_id)
         r = requests.get(url)
         if not r.ok:
             self._log_error(url, r)
@@ -53,7 +52,7 @@ class Client:
         recipes = []
 
         recipe_ids = self.get_recipes()
-        for recipe_id in recipe_ids['recipes']:
+        for recipe_id in recipe_ids["recipes"]:
             r = self.get_recipe(recipe_id)
             if r is not None:
                 recipes.append(r)
@@ -62,4 +61,5 @@ class Client:
 
     def _log_error(self, url, r):
         app.logger.error(
-            "Reqeuest failed: {} - {} - {}".format(r.status_code, url, r.text))
+            "Reqeuest failed: {} - {} - {}".format(r.status_code, url, r.text)
+        )
