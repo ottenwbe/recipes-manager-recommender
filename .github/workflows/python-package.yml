@@ -62,14 +62,14 @@ jobs:
       run: |
         docker buildx build --load --label "build-date=${{ steps.date.outputs.date }}" --label "version=development" -t docker.io/ottenwbe/recipes-manager-recommender:development -f Dockerfile .
     
-    # login to 
-    - name: Login to DockerHub
-      if: success() && github.event_name != 'pull_request'
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-    - name: Docker Buildx (push)
-      if: success() && github.event_name != 'pull_request'
-      run: |
-        docker buildx build --push --platform linux/arm64/v8,linux/amd64 --label "build-date=${{ steps.date.outputs.date }}" --label "version=development" -t docker.io/ottenwbe/recipes-manager-recommender:development -f Dockerfile .
+    # login to dockr and push development version (temporarily disabled)
+    #- name: Login to DockerHub
+    #  if: success() && github.event_name != 'pull_request'
+    #  uses: docker/login-action@v3
+    #  with:
+    #    username: ${{ secrets.DOCKER_USERNAME }}
+    #    password: ${{ secrets.DOCKER_PASSWORD }}
+    #- name: Docker Buildx (push)
+    #  if: success() && github.event_name != 'pull_request'
+    #  run: |
+    #    docker buildx build --push --platform linux/arm64/v8,linux/amd64 --label "build-date=${{ steps.date.outputs.date }}" --label "version=development" -t docker.io/ottenwbe/recipes-manager-recommender:development -f Dockerfile .
