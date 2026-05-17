@@ -1,18 +1,21 @@
 FROM docker.io/python:3.14-alpine
 LABEL maintainer="ottenwbe.public@gmail.com"
 
+# Create a non-root user for security
+RUN adduser -D recommender
+
 WORKDIR /app
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY analyzer/ ./analyzer/
-# Make port 5000 available to the world outside this container
+
 EXPOSE 5000
 
-WORKDIR /app
+USER recommender
 
-ENV FLASK_ENV=prod
 ENV FLASK_APP="analyzer"
 
-ENTRYPOINT ["flask", "run", "--host", "0.0.0.0"]
+# Use Gunicorn for production
+ENTRYPOINT ["gunicorn", "--bind", "0.0.0.0:5000", "analyzer:app"]

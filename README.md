@@ -25,7 +25,6 @@ Micro-Service that analyzes the recipes of [recipes-manager](https://github.com/
 2. Start Application
 
     ````bash
-    FLASK_ENV=development   FLASK_APP="analyzer" flask run
     FLASK_DEBUG=1 FLASK_APP="analyzer" flask run
     ````
 
@@ -33,8 +32,22 @@ Micro-Service that analyzes the recipes of [recipes-manager](https://github.com/
 
 ### Testing
 
+1. Install Test Dependencies (includes production requirements):
+    ````bash
+    pip install -r requirements-test.txt
+    ````
+
+2. Run the test suite:
+    ````bash
+    pytest -v
+    ````
+
+### Code Formatting
+
+This project uses **Black** for code formatting. To format your code before committing, run:
+
 ````bash
-pytest -v
+black .
 ````
 
 ## Release
