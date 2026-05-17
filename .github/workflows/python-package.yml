@@ -32,8 +32,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install flake8 pytest
-        pip install -r requirements.txt
+        python -m pip install flake8
         pip install -r requirements-test.txt
     - name: Lint with flake8
       run: |
@@ -61,6 +60,29 @@ jobs:
     - name: Docker Buildx (build)
       run: |
         docker buildx build --load --label "build-date=${{ steps.date.outputs.date }}" --label "version=development" -t docker.io/ottenwbe/recipes-manager-recommender:development -f Dockerfile .
+
+    - name: Container Smoke Test
+      run: |
+        # Start the container in detached mode
+        docker run -d -p 5000:5000 --name smoke-test docker.io/ottenwbe/recipes-manager-recommender:development
+        
+        # Wait for the container to become healthy (max 30 seconds)
+        timeout 30s sh -c '
+          while true; do
+            STATUS=$(docker inspect --format="{{.State.Health.Status}}" smoke-test 2>/dev/null || echo "not_found")
+            if [ "$STATUS" = "healthy" ]; then break; fi
+            if [ "$STATUS" = "unhealthy" ]; then
+              echo "Container became unhealthy. Exiting."
+              exit 1
+            fi
+            echo "Container status: $STATUS. Waiting..."
+            sleep 1
+          done
+        ' \
+          || (docker logs smoke-test && docker stop smoke-test && exit 1)
+        
+        echo "Container started and Gunicorn is healthy!"
+        docker stop smoke-test
     
     # login to dockr and push development version (temporarily disabled)
     #- name: Login to DockerHub
