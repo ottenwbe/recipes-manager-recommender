@@ -38,6 +38,4 @@ class Client:
         return recipes
 
     def _log_error(self, url, r):
-        app.logger.error(
-            f"Request failed: {r.status_code} - {url} - {r.text}"
-        )
+        app.logger.error(f"Request failed: {r.status_code} - {url} - {r.text}")
