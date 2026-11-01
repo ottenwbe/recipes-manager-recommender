@@ -40,11 +40,13 @@ class Client:
             if self._has_fresh_cache():
                 return list(self._recipes_cache)
 
-            recipes, ok = self._fetch_full_recipes()
+        recipes, ok = self._fetch_full_recipes()
+
+        with self._cache_lock:
             if ok:
                 self._recipes_cache = recipes
                 self._cache_expires_at = monotonic() + self._cache_ttl
-            return recipes
+        return recipes
 
     def _has_fresh_cache(self):
         return self._recipes_cache is not None and monotonic() < self._cache_expires_at
@@ -73,7 +75,11 @@ class Client:
         return recipes, True
 
     def _get_json(self, url):
-        response = requests.get(url, timeout=REQUEST_TIMEOUT_SECONDS)
+        try:
+            response = requests.get(url, timeout=REQUEST_TIMEOUT_SECONDS)
+        except requests.exceptions.RequestException as e:
+            app.logger.error(f"Request failed: {e} - {url}")
+            return None, False
         if not response.ok:
             app.logger.error(
                 f"Request failed: {response.status_code} - {url} - {response.text}"

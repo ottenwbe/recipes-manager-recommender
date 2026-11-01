@@ -18,7 +18,7 @@ def test_get_recipes(requests_mock: Mocker, recipes_client):
     assert {"recipes": ["1"]} == result
 
 
-def test_get_recipes(requests_mock: Mocker, recipes_client):
+def test_get_recipes_error(requests_mock: Mocker, recipes_client):
     requests_mock.get(
         RECIPE_CONFIG.RECIPE_SERVER + "/api/v1/recipes",
         text="Not Found",
@@ -72,7 +72,7 @@ def test_get_full_recipes_refreshes_after_cache_expires(
     )
     requests_mock.get(
         RECIPE_CONFIG.RECIPE_SERVER + "/api/v1/recipes/r/1",
-        json={"id": "1", "components": []},
+        json={"id": 1, "components": []},
     )
 
     client.get_full_recipes()
