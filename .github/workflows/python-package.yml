@@ -24,9 +24,9 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v7
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
@@ -49,9 +49,9 @@ jobs:
 
     # build test docker and push it
     - name: Set up QEMU
-      uses: docker/setup-qemu-action@v2
+      uses: docker/setup-qemu-action@v4
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2       
+      uses: docker/setup-buildx-action@v4       
     - name: Available platforms
       run: echo ${{ steps.buildx.outputs.platforms }}
     - name: Get current date/time

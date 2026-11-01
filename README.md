@@ -13,6 +13,10 @@ Micro-Service that analyzes the recipes of [recipes-manager](https://github.com/
     <url>/api/v1/recommendation/<recipe_id>/components
     ````
 
+The recommender caches the recipe catalog in process for 60 seconds. Requests
+within that period reuse the same catalog; each application worker or replica
+maintains its own cache.
+
 
 ## Run with Flask
 
@@ -60,3 +64,7 @@ To create a version, simply tag the master branch.
 git tag v<next release>
 git push --tags
 ````
+
+## Disclaimer
+
+This is just a small hobby project to not get rusty in python and in the meanwhile to learn using AI agents like opencode in addition. Feel free to contribute.
