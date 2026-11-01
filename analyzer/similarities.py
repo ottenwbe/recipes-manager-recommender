@@ -9,7 +9,7 @@ from analyzer import recipes_client
 def calc_simple_similarity(recipe_id, num, c=None):
     """Calculate similarities of other recipes based on given id"""
     if c is None:
-        c = recipes_client.Client()
+        c = recipes_client.DEFAULT_CLIENT
 
     recipes = c.get_full_recipes()
     component_per_recipe = _extract_recipe_components(recipes)

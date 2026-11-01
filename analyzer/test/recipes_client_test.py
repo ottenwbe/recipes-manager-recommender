@@ -59,3 +59,24 @@ def test_get_wrong_recipes(requests_mock: Mocker, recipes_client):
     )
     result = recipes_client.get_full_recipes()
     assert [] == result
+
+
+def test_get_full_recipes_refreshes_after_cache_expires(
+    requests_mock: Mocker, monkeypatch
+):
+    now = [0]
+    monkeypatch.setattr("analyzer.recipes_client.monotonic", lambda: now[0])
+    client = Client(cache_ttl=60)
+    requests_mock.get(
+        RECIPE_CONFIG.RECIPE_SERVER + "/api/v1/recipes", json={"recipes": ["1"]}
+    )
+    requests_mock.get(
+        RECIPE_CONFIG.RECIPE_SERVER + "/api/v1/recipes/r/1",
+        json={"id": "1", "components": []},
+    )
+
+    client.get_full_recipes()
+    now[0] = 61
+    client.get_full_recipes()
+
+    assert requests_mock.call_count == 4

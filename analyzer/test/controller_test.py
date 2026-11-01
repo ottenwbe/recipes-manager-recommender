@@ -5,13 +5,20 @@ import pytest
 
 from requests_mock.mocker import Mocker
 
-from analyzer import RECIPE_CONFIG, app
+from analyzer import RECIPE_CONFIG, app, recipes_client
 
 
 @pytest.fixture
 def client():
     with app.test_client() as client:
         yield client
+
+
+@pytest.fixture(autouse=True)
+def clear_recipe_cache():
+    recipes_client.DEFAULT_CLIENT.clear_cache()
+    yield
+    recipes_client.DEFAULT_CLIENT.clear_cache()
 
 
 def test_root(client):
@@ -89,3 +96,26 @@ def test_similarity_empty_component(requests_mock: Mocker, client):
     result = client.get("/api/v1/recommendation/1/components")
 
     assert {"recipes": ["2"]} == result.json
+
+
+def test_similarity_reuses_recipe_catalog_between_requests(
+    requests_mock: Mocker, client
+):
+    requests_mock.get(
+        RECIPE_CONFIG.RECIPE_SERVER + "/api/v1/recipes", json={"recipes": ["1", "2"]}
+    )
+    requests_mock.get(
+        RECIPE_CONFIG.RECIPE_SERVER + "/api/v1/recipes/r/1",
+        json={"id": "1", "components": [{"name": "a"}]},
+    )
+    requests_mock.get(
+        RECIPE_CONFIG.RECIPE_SERVER + "/api/v1/recipes/r/2",
+        json={"id": "2", "components": [{"name": "a"}, {"name": "b"}]},
+    )
+
+    first_result = client.get("/api/v1/recommendation/1/components")
+    second_result = client.get("/api/v1/recommendation/1/components")
+
+    assert {"recipes": ["2"]} == first_result.json
+    assert {"recipes": ["2"]} == second_result.json
+    assert requests_mock.call_count == 3
